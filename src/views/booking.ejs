@@ -1,0 +1,99 @@
+<%- include('navbar') %>
+
+<style>
+    .border {
+        border-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    .form {
+        text-align: center;
+        background-color: #fff; 
+        padding: 15px; 
+        border: 2px solid #007bff; 
+        border-radius: 20px; 
+    }
+
+    .form-group {
+        margin-top: 30px;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    .btn-block {
+        margin-top: 80px;
+    }
+
+</style>
+
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Book a Room</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border">
+                <img src="/rooms/<%= room.img %>" class="card-img-top" alt="Room Image">
+                <div class="card-body">
+                    <h3 class="card-title"><%= room.rooms.name %></h3>
+                    <h4><%= room.type %></h4>
+                    <p class="card-text"><strong>Price:</strong> <%= room.price %> THB / DAY</p>
+                    <p class="card-text"><strong>Capacity:</strong> <%= room.size %> people</p>
+                    <p class="card-text"><strong>Facilities:</strong> <%= room.facilities %></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 form">
+            <form action="/booking/hotel/<%= room.rooms.id %>/room/<%= room.id %>" method="POST" class="booking-form needs-validation" novalidate>
+                <div class="form-group">
+                    <label for="userId">Email</label>
+                    <input type="email" id="userId" name="email" value="<%= user.email %>" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="<%= user.username %>" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control" required>
+                    <div class="invalid-feedback">Please select a valid start date.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control" required>
+                    <div class="invalid-feedback">Please select a valid end date.</div>
+                </div>
+
+                <input type="hidden" value="<%= room.price %>" name="price">
+                <input type="hidden" value="<%= room.id %>" name="roomId">
+                <input type="hidden" value="<%= user.id %>" name="userId">
+                <button type="submit" class="btn btn-primary btn-block">ไปยังหน้าชำระเงิน</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+
+<%- include('footer') %>

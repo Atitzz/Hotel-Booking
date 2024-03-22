@@ -1,0 +1,25 @@
+<!-- pagePayment.ejs -->
+
+<!-- แสดงข้อมูลห้องพักที่จะจอง -->
+<h2>รายละเอียดห้องพัก</h2>
+<p>หมายเลขห้อง: <%= roomId %></p>
+<p>ผู้ใช้: <%= userId %></p>
+<p>วันที่เข้าพัก: <%= startDate %></p>
+<p>วันที่ออก: <%= endDate %></p>
+<p>ราคา: <%= price %> THB</p>
+
+<!-- แบบฟอร์มชำระเงิน -->
+<form class="form-group" action="/payment" method="post">
+    <script
+     src="http://checkout.stripe.com/checkout.js" 
+     class="stripe-button" 
+     data-name="Hotel Booking" 
+     data-key="pk_test_51NmzDjChq1rTBckYBEQo18WYWEGyX6ZEk3wdS2PBU6s1eUTVFrk61QnxVPHuOUDN5Ajh4MiA6tjcuk9HFjNdHCtx00prHB4A8O"
+     data-description="ชำระเงินสำหรับการจองห้องพัก" 
+     data-amount="<%= price * 100 %>" 
+     data-currency="thb" 
+     ></script>
+     <input type="hidden" name="amount" value="<%= price * 100 %>">
+</form>
+
+

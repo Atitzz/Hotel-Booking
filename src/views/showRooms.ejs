@@ -1,0 +1,275 @@
+<%- include('navbar') %>
+
+    <style>
+        /* CSS สำหรับการตกแต่งหน้าเว็บ */
+
+        /* ตกแต่งการ์ด */
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ขนาดและสีข้อความในการ์ด */
+        .card-title {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .card-text {
+            color: #666;
+        }
+
+        /* ขนาดรูปภาพในการ์ด */
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            /* ปรับขนาดรูปภาพให้เต็มพื้นที่ */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        /* ส่วนของการค้นหา */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .search-container form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input[type=text] {
+            padding: 10px 20px;
+            font-size: 17px;
+            border: 1px solid #ccc;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            width: 100%;
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            background: #007bff;
+            font-size: 27px;
+            border: none;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .search-container button:hover {
+            background: #0056b3;
+        }
+
+        /* ปุ่มดูข้อมูลเพิ่มเติม */
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* การจัดระดับ */
+        .rating {
+            margin-top: 10px;
+        }
+
+        .stars {
+            margin-bottom: 10px;
+        }
+
+        .star {
+            font-size: 22px;
+            cursor: pointer;
+            margin-right: 5px;
+            color: orange;
+        }
+
+        /* Popup */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .popup-room-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .room-details h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .room-details p {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .btn-book {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-book:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+
+
+    <!-- ข้อความแจ้งเตือน -->
+    <div class="container my-2">
+        <% if(message.length> 0 ) { %>
+            <div class="alert alert-success text-center" id="custom-message">
+                <strong>
+                    <%= message %>
+                </strong>
+            </div>
+            <% } %>
+    </div>
+
+    <!-- แสดงห้องพัก -->
+    <div class="container">
+        <div class="row">
+            <% showRoom.forEach((room)=> { %>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <img src="/rooms/<%= room.img %>" alt="Hotel Image" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="card-text text-center">
+                                <%= room.type %>
+                            </h3>
+                            <p>เข้าพักได้สูงสุด : <%= room.size %> คน</p>
+                            <p>ราคา : <%= room.price %> THB / DAY</p>
+                            <!-- รีวิวและปุ่มดูข้อมูลเพิ่มเติม -->
+                            <div class="rating">
+                                <div class="stars">
+                                    <label for="rating">Rate this room:</label>
+                                    <span class="star">&#9733;</span>
+                                    <span class="star">&#9733;</span>
+                                    <span class="star">&#9733;</span>
+                                    <span class="star">&#9733;</span>
+                                    <span class="star">&#9733;</span>
+                                </div>
+                                <button class="btn btn-primary mb-2"
+                                    onclick="openPopup('<%= room.id %>')">ดูข้อมูลเพิ่มเติม</button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <%= room.status %>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+        </div>
+    </div>
+
+    <!-- Popup -->
+    <% showRoom.forEach((room)=> { %>
+        <div id="popup-<%= room.id %>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="popupLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupLabel">
+                            <%= room.rooms.name %>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="/rooms/<%= room.img %>" class="img-fluid mb-3" alt="Room Image"
+                            style="width:100%; height: 300px;">
+                        <div>
+                            <h1 class="text-center">
+                                <%= room.type %>
+                            </h1>
+                            <hr>
+                            <h4>รายละเอียดห้องพัก</h4>
+                            <h6>เข้าพักได้สูงสุด : <%= room.size %> คน</h6>
+                            <h6>ราคา : <%= room.price %> THB / DAY</h6>
+
+                            <h5>สิ่งอำนวยความสะดวก : </h5>
+                            <ul>
+                                <% room.facilities.split(',').forEach((facility)=> { %>
+                                    <li>
+                                        <%= facility.trim() %>
+                                    </li>
+                                    <% }) %>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" href="/booking/hotel/<%= room.rooms.id%>/room/<%= room.id %>"
+                            class="btn btn-primary">จองห้องพัก</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+
+            <script>
+                function openPopup(roomId) {
+                    $('#popup-' + roomId).modal('show');
+                }
+            </script>
