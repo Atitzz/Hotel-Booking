@@ -1,28 +1,24 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controller/room');
+const controller = require("../controller/room");
 const auth = require("../middleware/auth");
-const { uploadHotelImg, uploadRoomImg } = require('../middleware/upload');
+const uploadRoomImg = require("../middleware/upload");
 
-router.get('/', controller.index);
+router.get("/", controller.index);
 
-router.get('/allHotel', controller.hotels);
-router.get('/hotel/:id', controller.seeMoreHotel);
-router.get('/addHotel', auth, controller.formAddHotel);
-router.post('/addHotel', auth, uploadHotelImg, controller.addHotel)
+router.get("/rooms", controller.showRooms);
+router.get("/addRoom", auth, controller.formAddRoom);
+router.post("/addRoom", auth, uploadRoomImg, controller.addRoom);
 
-router.get('/showRooms', controller.showRooms);
-router.get('/addRoom/hotel/:id', auth, controller.formAddRoom);
-router.post('/addRoom/hotel/:id', auth, uploadRoomImg, controller.addRoom);
+router.get("/booking/room/:roomID", controller.formBookingRoom);
+router.post("/booking/room/:roomID", controller.bookingRoom);
+router.get("/pagePayment", controller.pagePayment);
+router.post("/payment", controller.payment);
 
-router.get('/booking/hotel/:hotelID/room/:roomID',auth, controller.formBookingRoom)
-router.post('/booking/hotel/:hotelID/room/:roomID',auth, controller.bookingRoom)
-router.get('/pagePayment', auth, controller.pagePayment);
-router.post('/payment', auth, controller.payment);
+router.get("/checkOut", auth, controller.formCheckOut);
+router.post("/checkOut", auth, controller.checkOut);
 
-router.get('/search/', controller.search);
+router.get("/searchTypeRoom/", controller.searchTypeRoom);
+router.get("/search/", controller.search);
 
-
-
-
-module.exports = router
+module.exports = router;

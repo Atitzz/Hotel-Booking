@@ -3,103 +3,38 @@ const { Op } = require("sequelize");
 const stripe = require("stripe")(
   "sk_test_51NmzDjChq1rTBckY24CpBSgsHMmxHwB13u8EpUk7xkIc0hKbrxyRBLqzTTM1MbXtGLUiVC1uGSftXmLyEsn9UsZi000Pq80Ue5"
 );
+const day = require("dayjs");
 
 // หน้าแรก
-const index = (req, res) => {
+const index = async (req, res) => {
   try {
     const user = req.cookies && req.cookies.jwt;
     const showUser = req.cookies && req.cookies.user;
-    const message = req.flash("success");
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
 
-    res.render("index", { message, user, showUser });
-  } catch (error) {
-    console.log(error);
-  }
-};
+    const { roomType } = req.query;
+    const roomFilter = roomType ? `WHERE type = ${roomType}` : "";
+    const [rooms] = await db.sequelize.query(
+      `
+      SELECT DISTINCT ON (type) id, type, img, size
+      FROM "Rooms"
+      ${roomFilter}
+      ORDER BY type
+    `
+    );
 
-// หน้าดูโรงแรมที่มีทั้งหมด
-const hotels = async (req, res) => {
-  try {
-    const user = req.cookies && req.cookies.jwt;
-    const showUser = req.cookies && req.cookies.user;
-    const checkTypeUser = req.cookies && req.cookies.type;
-    const message = req.flash("success");
-
-    const showHotel = await db.Hotel.findAll({
-      attributes: ["id", "name", "address", "img"],
+    // ไม่ต้องใช้ toJSON เพราะ sequelize.query คืนค่าเป็น object ธรรมดาอยู่แล้ว ไม่ใช่ sequelize object model
+    // แปลงค่า img จาก JSON string เป็น array
+    const showRoom = rooms.map((room) => {
+      return {
+        ...room,
+        img: JSON.parse(room.img),
+      };
     });
-
-    res.render("showHotels", {
-      message,
-      user,
-      showUser,
-      showHotel,
-      checkTypeUser,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// หน้าเข้าชมโรงแรม
-const seeMoreHotel = async (req, res) => {
-  try {
-    const user = req.cookies && req.cookies.jwt;
-    const showUser = req.cookies && req.cookies.user;
-    const checkTypeUser = req.cookies && req.cookies.type;
-
-    const hotel = req.params.id;
-    const showDetail = await db.Hotel.findOne({
-      where: { id: hotel },
-      attributes: ["id", "name", "address", "img"],
-      include: [
-        {
-          model: db.Room,
-          as: "rooms",
-          attributes: [
-            "id",
-            "type",
-            "price",
-            "status",
-            "size",
-            "img",
-            "facilities",
-          ],
-        },
-      ],
-    });
-
-    res.render("seemoreHotel", { user, showUser, checkTypeUser, showDetail });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// หน้าแบบฟอร์มเพิ่มโรงแรม
-const formAddHotel = async (req, res) => {
-  try {
-    const user = req.cookies && req.cookies.jwt;
-    const showUser = req.cookies && req.cookies.user;
-
-    res.render("addHotel", { user, showUser });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// เพิ่มโรงแรม
-const addHotel = async (req, res) => {
-  try {
-    const { name, address } = req.body;
-    const hotelImage = req.file ? req.file.filename : null;
-
-    const newHotel = await db.Hotel.create({
-      name,
-      address,
-      img: hotelImage,
-    });
-    req.flash("success", "Hotel created successfully");
-    res.redirect("/allHotel");
+    showRoom.sort((a, b) => a.size - b.size);
+    res.render("index", { user, showUser, checkTypeUser, showRoom });
   } catch (error) {
     console.log(error);
   }
@@ -110,8 +45,11 @@ const showRooms = async (req, res) => {
   try {
     const user = req.cookies && req.cookies.jwt;
     const showUser = req.cookies && req.cookies.user;
-    const message = req.flash("success");
-    const showRoom = await db.Room.findAll({
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
+
+    const rooms = await db.Room.findAll({
       attributes: [
         "id",
         "type",
@@ -119,19 +57,25 @@ const showRooms = async (req, res) => {
         "status",
         "size",
         "img",
-        "hotelId",
         "facilities",
-      ],
-      include: [
-        {
-          model: db.Hotel,
-          as: "rooms",
-          attributes: ["id", "name", "address", "img"],
-        },
       ],
     });
 
-    res.render("showRooms", { message, user, showUser, showRoom });
+    // .toJSON() เป็น method ของ sequelize ใช้แปลง Object model เป็น Object json ธรรมดา
+    // แปลงค่า img จาก JSON string เป็น array
+    const showRoom = rooms.map((room) => {
+      return {
+        ...room.toJSON(),
+        img: JSON.parse(room.img),
+      };
+    });
+
+    res.render("showRooms", {
+      user,
+      showUser,
+      showRoom,
+      checkTypeUser,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -142,11 +86,12 @@ const formAddRoom = async (req, res) => {
   try {
     const user = req.cookies && req.cookies.jwt;
     const showUser = req.cookies && req.cookies.user;
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
     const message = req.flash("success");
-    const numberHotel = req.params.id;
-    const hotel = await db.Hotel.findByPk(numberHotel);
 
-    res.render("addRoom", { user, showUser, message, hotel });
+    res.render("addRoom", { user, showUser, message, checkTypeUser });
   } catch (error) {
     console.log(error);
   }
@@ -155,8 +100,9 @@ const formAddRoom = async (req, res) => {
 // เพิ่มห้อง
 const addRoom = async (req, res) => {
   try {
-    const { type, size, price, status, hotelId, facilities } = req.body;
-    const roomImage = req.file ? req.file.filename : null;
+    const { type, size, price, status, facilities } = req.body;
+    // const roomImage = req.file ? req.file.filename : null;
+    const roomImages = req.files ? req.files.map((file) => file.filename) : [];
 
     // หากมีเกิน 1 ตัวเลือก ให้แปลงเป็น array เก็บใน DB
     const facilitiesString = Array.isArray(facilities)
@@ -167,13 +113,12 @@ const addRoom = async (req, res) => {
       type,
       size,
       price,
-      img: roomImage,
+      img: JSON.stringify(roomImages),  //เก็บไฟล์รูปเป็น json string
       status,
-      hotelId,
       facilities: facilitiesString,
     });
     req.flash("success", "Room created successfully");
-    res.redirect("/showRooms");
+    res.redirect("/rooms");
   } catch (error) {
     console.log(error);
   }
@@ -184,20 +129,16 @@ const formBookingRoom = async (req, res) => {
   try {
     const showUser = req.cookies && req.cookies.user;
     const user = req.user;
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
 
     const { roomID } = req.params;
     const room = await db.Room.findOne({
       where: { id: roomID },
-      include: [
-        {
-          model: db.Hotel,
-          as: "rooms",
-          attributes: ["id", "name", "address"],
-        },
-      ],
     });
 
-    res.render("booking", { user, showUser, room });
+    res.render("booking", { user, showUser, room, checkTypeUser });
   } catch (error) {
     console.log(error);
   }
@@ -206,11 +147,11 @@ const formBookingRoom = async (req, res) => {
 // จองห้อง
 const bookingRoom = async (req, res) => {
   try {
-    const { userId, roomId, price, startDate, endDate } = req.body;
+    const { username, roomId, price, startDate, endDate } = req.body;
 
     const booking = await db.Booking.create({
       roomId,
-      userId,
+      username,
       startDate,
       endDate,
       status: "Confirm",
@@ -219,12 +160,16 @@ const bookingRoom = async (req, res) => {
 
     const room = await db.Room.findByPk(roomId);
     if (room) {
-      await room.update({ status: "Occupied" });
+      await room.update({
+        status: "Occupied",
+        startDate,
+        endDate,
+      });
     }
 
     req.session.cart = {
-      userId,
       roomId,
+      username,
       price,
       startDate,
       endDate,
@@ -237,56 +182,13 @@ const bookingRoom = async (req, res) => {
   }
 };
 
-// แถบค้นหา
-const search = async (req, res) => {
-  try {
-    // ดึงค่าที่ถูกส่งมาจากแบบฟอร์มผ่าน req.query
-    const { location, numGuest, checkIn, checkOut } = req.query
-
-    // ค้นหาข้อมูลโรงแรมที่ตรงกับเงื่อนไขในฐานข้อมูล
-    const hotels = await db.Hotel.findAll({
-      where: {
-        [Op.or]: [
-          { name: { [Op.iLike]: `%${location}%` } }, 
-          { address: { [Op.iLike]: `%${location}%` } }
-        ],
-      },
-      attributes: ["id", "name", "address", "img"], 
-      include: [
-        {
-          model: db.Room,
-          as: "rooms",
-          where: {
-            status: "Available",
-          },
-          attributes: [
-            "id",
-            "type",
-            "price",
-            "status",
-            "size",
-            "img",
-            "facilities",
-          ],
-        },
-      ],
-    });
-
-    res.render("searchResult", { hotels, location, numGuest, checkIn, checkOut });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-
 // หน้าชำระเงิน
 const pagePayment = async (req, res) => {
   try {
-    const { roomId, userId, price, startDate, endDate } = req.session.cart;
+    const { roomId, username, price, startDate, endDate } = req.session.cart;
     res.render("pagePayment", {
       roomId,
-      userId,
+      username,
       price,
       startDate,
       endDate,
@@ -309,7 +211,7 @@ const payment = async (req, res) => {
 
     const bookingId = req.session.cart.bookingId;
     await db.Booking.update(
-      { paymentStatus: "Paid" },
+      { paymentStatus: "Paid", checkOut: false },
       { where: { id: bookingId } }
     );
 
@@ -320,18 +222,133 @@ const payment = async (req, res) => {
   }
 };
 
+const formCheckOut = async (req, res) => {
+  try {
+    const showUser = req.cookies && req.cookies.user;
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
+    const user = req.user;
+    const bookings = await db.Booking.findAll({
+      where: {
+        [Op.and]: [
+          { paymentStatus: "Paid" },
+          { checkOut: false },
+          { "$roomBooking.status$": "Occupied" },
+        ],
+      },
+      include: [
+        {
+          model: db.Room,
+          as: "roomBooking",
+        },
+      ],
+    });
+
+    res.render("checkOut", {
+      user,
+      showUser,
+      bookings,
+      day: day,
+      checkTypeUser,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const checkOut = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+    const setRoom = await db.Room.findByPk(roomId);
+    await db.Room.update(
+      {
+        status: "Available",
+        startDate: null,
+        endDate: null,
+        checkOut: true,
+      },
+      { where: { id: roomId } }
+    );
+    await db.Booking.update({ checkOut: true }, { where: { roomId: roomId } });
+    res.redirect("/rooms");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const searchTypeRoom = async (req, res) => {
+  try {
+    const user = req.cookies && req.cookies.jwt;
+    const showUser = req.cookies && req.cookies.user;
+    const checkTypeUser = showUser
+      ? await db.User.findOne({ where: { username: showUser } })
+      : null;
+
+    const { roomType } = req.query;
+    let showRoom = [];
+    if (roomType) {
+      showRoom = await db.Room.findAll({
+        where: db.sequelize.where(
+          db.sequelize.cast(db.sequelize.col("type"), "TEXT"),
+          { [Op.iLike]: `${roomType}` }
+        ),
+      });
+    } else {
+      showRoom = await db.Room.findAll({});
+    }
+    // แปลงค่า img จาก JSON string เป็น array
+    showRoom = showRoom.map((room) => {
+      return {
+        ...room.toJSON(),
+        img: JSON.parse(room.img),
+      };
+    });
+
+    res.render("showRooms", { user, showUser, checkTypeUser, showRoom });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// แถบค้นหา (การค้นหาวันที่ ต้องแปลงค่า)
+const search = async (req, res) => {
+  try {
+    const { search, numGuest, checkIn, checkOut } = req.query;
+    // const startDateCondition = checkIn ? { [Op.lt]: checkIn } : null;
+    // const endDateCondition = checkOut ? { [Op.gt]: checkOut } : null;
+    const startDate = checkIn ? new Date(checkIn) : null;
+    const endDate = checkOut ? new Date(checkOut) : null;
+
+    const rooms = await db.Room.findAll({
+      where: {
+        [Op.and]: [
+          { type: { [Op.iLike]: `%${search}%` } },
+          { status: "Available" },
+          { size: { [Op.gte]: numGuest } },
+          { startDate: { [Op.or]: { [Op.lt]: startDate, [Op.eq]: null } } },
+          { endDate: { [Op.or]: { [Op.gt]: endDate, [Op.eq]: null } } },
+        ],
+      },
+    });
+    res.render("search", { rooms: rooms });
+  } catch (error) {
+    console.error(error);
+    console.log(error);
+  }
+};
+
 module.exports = {
   index,
-  formAddHotel,
-  addHotel,
-  hotels,
   showRooms,
   formAddRoom,
   addRoom,
-  seeMoreHotel,
   formBookingRoom,
   bookingRoom,
   pagePayment,
   payment,
+  searchTypeRoom,
   search,
+  formCheckOut,
+  checkOut,
 };

@@ -1,5 +1,411 @@
-<%- include('navbar') %>
+<style>
+    .bg {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
 
-<%- include('search') %>
+    .bg::after {
+        content: "";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        filter: brightness(60%);
+        background-image: url("https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 85%;
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+    }
+
+    .card-1 {
+        color: #fff;
+        padding: 25px;
+    }
+
+    .title h2 {
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+
+    .body h1 {
+        font-size: 100px;
+    }
+
+    .card-2 {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: 20px;
+    }
+
+    .card-2 h2 {
+        color: #fff;
+        position: absolute;
+        bottom: 15px;
+        left: 20px;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+    }
+
+    .card-2 .box1,
+    .box2,
+    .box3,
+    .box4 {
+        width: 90%;
+        height: 220px;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+    .box1 {
+        background-image: url("https://images.unsplash.com/photo-1579683670728-96c9abc7a088?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80");
+    }
+
+    .box2 {
+        background-image: url("https://images.unsplash.com/photo-1552464717-70ffd59710bf?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80");
+    }
+
+    .box3 {
+        background-image: url("https://images.unsplash.com/photo-1556609894-0ae309cb8354?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=668&q=80");
+    }
+
+    .box4 {
+        background-image: url("https://images.unsplash.com/photo-1601225612316-b4733315a717?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80");
+    }
+
+    .card-1 h2 {
+        font-size: 2rem;
+        letter-spacing: 2.8px;
+    }
+
+    .card-1 p {
+        opacity: 0.4;
+    }
+
+
+    .card-2 div {
+        transition: 0.5s;
+    }
+
+    .card-2 div:hover {
+        transition: 0.3s;
+        transform: scale(1.1);
+        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+    }
+
+    #container-1 {
+        width: 100%;
+        margin-top: 80px;
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #container-1 h2 {
+        color: #616161;
+    }
+
+    #container-1 p {
+        color: #616161;
+        margin-top: 20px;
+        padding: 0px 100px;
+        text-align: center;
+    }
+
+    .room .card-room {
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        margin-bottom: 15px;
+    }
+
+    .room .card-room:hover {
+        transform: scale(1.05);
+    }
+
+    .room .card-room .card-img {
+        height: 200px;
+    }
+
+    .room .card-room .card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .room .card-room .card-body {
+        padding: 20px;
+    }
+
+    .card-footer h4 {
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-custom {
+        font-size: 14px;
+        background-color: #3e3935;
+        color: #fff;
+        padding: 5px 15px;
+    }
+
+    .btn-custom:hover {
+        background-color: #f0e36a;
+        color: #3e3935;
+        text-decoration: none;
+    }
+
+    .view-room {
+        margin: 40px 0px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .service {
+        position: relative;
+        width: 100%;
+        min-height: 100%;
+        background-color: #adadad2d;
+    }
+
+    .service #container-1 p {
+        padding: 0px 200px;
+    }
+
+    #img-service {
+        width: 100%;
+        height: 500px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    #services-1,
+    #services-2,
+    #services-3,
+    #services-4 {
+        padding: 10px 20px 0px 20px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: row;
+        cursor: pointer;
+    }
+
+    .col-md-5 .card .card-title {
+        padding: 0px 20px;
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
+
+    .col-md-5 .card .card-body {
+        padding: 0px 20px;
+        font-size: 14px;
+    }
+
+    #icon-service-1,
+    #icon-service-2,
+    #icon-service-3,
+    #icon-service-4 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        width: 40%;
+        color: #f0e36a;
+    }
+
+    .card-service.focused::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -20px;
+        transform: translate(100%, -50%);
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 10px solid #3e3935;
+    }
+</style>
+
+
+<!-- Banner -->
+<div class="bg">
+    <%- include('navbar') %>
+
+        <div class="content">
+            <div class="card-1">
+                <div class="title">
+                    <h2><i class="fas fa-map-marker-alt text-warning"></i> Thailand</h2>
+                </div>
+                <div class="body">
+                    <h1>PHU</h1>
+                    <h1>KET</h1>
+                </div>
+            </div>
+            <div class="card-2" style="width:50%;">
+                <div class="box1">
+                    <h2>Bleach</h2>
+                </div>
+                <div class="box2">
+                    <h2>Island</h2>
+                </div>
+                <div class="box3">
+                    <h2>Mountain</h2>
+                </div>
+                <div class="box4">
+                    <h2>Scenery</h2>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<!-- FAVORITE ROOMS -->
+<div class="container" id="container-1">
+    <h2>OUR FAVORITE ROOMS</h2>
+    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+        dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+        suscipit.</p>
+</div>
+
+<div class="container room">
+    <div class="row">
+        <% showRoom.map((room) => { %>
+        <div class="col-lg-4 col-md-6">
+            <div class="card-room">
+                <div class="card-img">
+                    <img src="/rooms/<%= room.img %>"
+                        alt="">
+                </div>
+                <div class="card-footer">
+                    <h4><%= room.type %>
+                        <a href="/searchTypeRoom/?roomType=<%= room.type %>" class="btn-custom">View Detail</a>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    <div class="view-room">
+        <a href="/rooms" class="btn-custom">View Rooms list</a>
+    </div>
+</div>
+
+
+<!-- service -->
+<div class="service">
+    <div id="container-1">
+        <h2>OUR AWESOME SERVICES</h2>
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+            dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+            suscipit.</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <img id="img-service"
+                    src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D"
+                    alt="">
+            </div>
+            <div class="col-md-5">
+                <a
+                    onclick="changeImage('https://images.unsplash.com/photo-1578474846511-04ba529f0b88?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D','services-1');">
+                    <div class="card card-service" id="services-1">
+                        <div id="icon-service-2">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title">Restaurant </h5>
+                            <p class="card-body">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam,
+                                ipsam commodi vitae nisi neque sint, </p>
+                        </div>
+                    </div>
+                </a>
+                <a
+                    onclick="changeImage('https://media.istockphoto.com/id/1785613657/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%AB%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%99%E0%B8%A7%E0%B8%94%E0%B8%AA%E0%B8%9B%E0%B8%B2%E0%B8%AA%E0%B8%B8%E0%B8%94%E0%B8%AB%E0%B8%A3%E0%B8%B9%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%97%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%A7.jpg?s=612x612&w=0&k=20&c=cwjtPGcLZ8QjD8JxSxR4SqI6fhB8m0RmvqhU3QFFAEs=','services-2');">
+                    <div class="card card-service" id="services-2">
+                        <div id="icon-service-2">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title">Spa - Beauty & Health </h5>
+                            <p class="card-body">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam,
+                                ipsam commodi vitae nisi neque sint, </p>
+                        </div>
+                    </div>
+                </a>
+                <a
+                    onclick="changeImage('https://images.unsplash.com/photo-1579488081757-b212dbd6ee72?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29uZmVyZW5jZSUyMHJvb218ZW58MHx8MHx8fDA%3D','services-3');">
+                    <div class="card card-service" id="services-3">
+                        <div id="icon-service-3">
+                            <i class="fa-solid fa-people-roof"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title">Conference Room </h5>
+                            <p class="card-body">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam,
+                                ipsam commodi vitae nisi neque sint, </p>
+                        </div>
+                    </div>
+                </a>
+                <a
+                    onclick="changeImage('https://images.unsplash.com/photo-1536745511564-a5fa6e596e7b?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3dpbW1pbmclMjBwb29sfGVufDB8fDB8fHww','services-4');">
+                    <div class="card card-service" id="services-4">
+                        <div id="icon-service-4">
+                            <i class="fa-solid fa-person-swimming"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title">Swimming Pool</h5>
+                            <p class="card-body">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam,
+                                ipsam commodi vitae nisi neque sint, </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <%- include('footer') %>
+
+    <script>
+        window.onload = function () {
+            changeImage('https://images.unsplash.com/photo-1578474846511-04ba529f0b88?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D', 'services-1');
+        };
+        let currentFocusedCardId = null;
+
+        function changeImage(newImageUrl, cardId) {
+            document.getElementById('img-service').src = newImageUrl;
+            document.getElementById(cardId).style.backgroundColor = '#3e3935';
+            document.getElementById(cardId).style.color = '#fff';
+            
+            if (currentFocusedCardId && currentFocusedCardId !== cardId) {
+                document.getElementById(currentFocusedCardId).style.backgroundColor = '';
+                document.getElementById(currentFocusedCardId).style.color = '';
+                document.getElementById(currentFocusedCardId).classList.remove('focused');
+            }
+            document.getElementById(cardId).classList.add('focused');
+            currentFocusedCardId = cardId;
+        }
+    </script>

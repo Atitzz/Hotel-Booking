@@ -1,169 +1,188 @@
-<%- include('navbar') %>
+<style>
+  nav {
+    background-color: #3e3935;
+  }
 
-  <style>
-    .container-1 {
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 50px;
-      max-width: 600px;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0, 23, 171, 0.5);
-      border-color: #007bff;
+  .setPageAddRoom {
+    margin-top: 100px;
+  }
 
-    }
+  .container-1 {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 23, 171, 0.5);
+    border-color: #007bff;
 
-    h2 {
-      color: #007bff;
-      /* ตั้งค่าสีของตัวหนังสือเป็นสีฟ้า */
-      text-align: center;
-      background-color: #fff;
-      /* ตั้งค่าสีพื้นหลังเป็นสีขาว */
-      padding: 15px;
-      /* เพิ่มขอบเขต */
-      border: 2px solid #007bff;
-      /* เพิ่มเส้นขอบสีฟ้า */
-      border-radius: 10px;
-      /* เพิ่มขอบเขตรอบๆ */
-    }
+  }
 
-    .form-group {
-      margin-bottom: 30px;
-      width: 100%;
-    }
+  h2 {
+    color: #007bff;
+    text-align: center;
+    background-color: #fff;
+    padding: 15px;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+  }
 
-    label {
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-      display: block;
-    }
+  .form-group {
+    margin-bottom: 30px;
+    width: 100%;
+  }
 
-    .form-control {
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 100%;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease-in-out;
-    }
+  label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+  }
 
-    .form-control:focus {
-      border-color: #007bff;
-      outline: none;
-    }
+  .form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out;
+  }
 
-    .btn-primary {
-      background-color: #007bff;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-      padding: 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease-in-out;
-      margin-top: 20px;
-    }
+  .form-control:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
+  #submit {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    margin-top: 20px;
+  }
 
-    .invalid-feedback {
-      color: #dc3545;
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
-  </style>
+  #submit:hover {
+    background-color: #0056b3;
+  }
 
-  <div class="setPageAddRoom">
-    <div class="container-1 mt-5">
-      <h2 class="my-4" align="center">Add Room</h2>
-      <form class="needs-validation" novalidate action="/addRoom/hotel/<%= hotel.id%>" method="post"
-        enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="">ประเภทห้อง</label>
-          <input type="text" name="type" value="" class="form-control" required>
-          <div class="invalid-feedback">กรุณากรอกประเภทห้อง</div>
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+</style>
+<section>
+  <%- include('navbar') %>
+</section>
+
+
+<div class="setPageAddRoom">
+  <div class="container-1 mt-5">
+    <h2 class="my-4" align="center">Add Room</h2>
+    <form class="needs-validation" novalidate action="/addRoom" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="">ประเภทห้อง</label>
+        <input type="text" name="type" value="" class="form-control" required>
+        <div class="invalid-feedback">กรุณากรอกประเภทห้อง</div>
+      </div>
+      <div class="form-group">
+        <label for="">เข้าพักได้สูงสุด</label>
+        <input type="text" name="size" value="" class="form-control" required>
+        <div class="invalid-feedback">กรุณาใส่จำนวน</div>
+      </div>
+      <div class="form-group">
+        <label for="">ราคา / คืน</label>
+        <input type="text" name="price" value="" class="form-control" required>
+        <div class="invalid-feedback">กรุณาใส่ราคา</div>
+      </div>
+      <div class="form-group">
+        <label for="img">รูปภาพ</label>
+        <input type="file" id="img" name="img" class="form-control" multiple required>
+        <div class="invalid-feedback">กรุณาใส่รูปภาพ</div>
+        <div id="file-count" class="text-muted mt-2"></div> <!-- แสดงจำนวนไฟล์ที่เลือก -->
+      </div>
+      
+
+      <div class="form-group">
+        <label for="">สิ่งอำนวยความสะดวก</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="wifi" value="Wi-Fi">
+          <label class="form-check-label" for="wifi">รวมบริการอินเทอร์เน็ตไร้สาย (Wi-Fi) ฟรี</label>
         </div>
-        <div class="form-group">
-          <label for="">เข้าพักได้สูงสุด</label>
-          <input type="text" name="size" value="" class="form-control" required>
-          <div class="invalid-feedback">กรุณาใส่จำนวน</div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="aircon" value="เครื่องปรับอากาศ">
+          <label class="form-check-label" for="aircon">เครื่องปรับอากาศ</label>
         </div>
-        <div class="form-group">
-          <label for="">ราคา / คืน</label>
-          <input type="text" name="price" value="" class="form-control" required>
-          <div class="invalid-feedback">กรุณาใส่ราคา</div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="waterheater" value="เครื่องทำน้ำอุ่น">
+          <label class="form-check-label" for="waterheater">เครื่องทำน้ำอุ่น</label>
         </div>
-        <div class="form-group">
-          <label for="">รูปภาพ</label>
-          <input type="file" name="img" value="" class="form-control" required>
-          <div class="invalid-feedback">กรุณาใส่รูปภาพ</div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="breakfast" value="อาหารเช้า">
+          <label class="form-check-label" for="breakfast">อาหารเช้า</label>
         </div>
-        
-        <div class="form-group">
-          <label for="">สิ่งอำนวยความสะดวก</label>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="wifi" value="Wi-Fi">
-            <label class="form-check-label" for="wifi">รวมบริการอินเทอร์เน็ตไร้สาย (Wi-Fi) ฟรี</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="aircon" value="เครื่องปรับอากาศ">
-            <label class="form-check-label" for="aircon">เครื่องปรับอากาศ</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="waterheater" value="เครื่องทำน้ำอุ่น">
-            <label class="form-check-label" for="waterheater">เครื่องทำน้ำอุ่น</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="breakfast" value="อาหารเช้า">
-            <label class="form-check-label" for="breakfast">อาหารเช้า</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="freeparking" value="ที่จอดรถฟรี">
-            <label class="form-check-label" for="freeparking">ที่จอดรถฟรี</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="outdoorpool" value="สระว่ายน้ำกลางแจ้ง">
-            <label class="form-check-label" for="outdoorpool">สระว่ายน้ำกลางแจ้ง</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="coffeemaker" value="อุปกรณ์ชงชา/กาแฟในทุกห้องพัก">
-            <label class="form-check-label" for="coffeemaker">อุปกรณ์ชงชา/กาแฟในทุกห้องพัก</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="facilities" id="airportshuttle" value="รถรับส่งสนามบิน">
-            <label class="form-check-label" for="airportshuttle">รถรับส่งสนามบิน</label>
-          </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="freeparking" value="ที่จอดรถฟรี">
+          <label class="form-check-label" for="freeparking">ที่จอดรถฟรี</label>
         </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="outdoorpool" value="สระว่ายน้ำกลางแจ้ง">
+          <label class="form-check-label" for="outdoorpool">สระว่ายน้ำกลางแจ้ง</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="coffeemaker"
+            value="อุปกรณ์ชงชา/กาแฟในทุกห้องพัก">
+          <label class="form-check-label" for="coffeemaker">อุปกรณ์ชงชา/กาแฟในทุกห้องพัก</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="facilities" id="airportshuttle" value="รถรับส่งสนามบิน">
+          <label class="form-check-label" for="airportshuttle">รถรับส่งสนามบิน</label>
+        </div>
+      </div>
 
-        <input type="hidden" name="status" value="Available">
-        <input type="hidden" name="hotelId" value="<%= hotel.id%>">
-        <input class="btn btn-primary" type="submit" name="" value="บันทึกข้อมูล">
-      </form>
-    </div>
+      <input type="hidden" name="status" value="Available">
+      <input class="btn btn-primary" id="submit" type="submit" name="" value="บันทึกข้อมูล">
+    </form>
   </div>
+</div>
 
-  <script>
-    (function () {
-      'use strict';
-      window.addEventListener('load', function () {
-        var forms = document.getElementsByClassName('needs-validation');
-        var validation = Array.prototype.filter.call(forms, function (form) {
-          form.addEventListener('submit', function (event) {
-            if (form.checkValidity() === false) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-          }, false);
-        });
-      }, false);
-    })();
-  </script>
+<!-- validate -->
+<script>
+  (function () {
+    'use strict';
+    window.addEventListener('load', function () {
+      var forms = document.getElementsByClassName('needs-validation');
+      var validation = Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const imgInput = document.getElementById('img');
+    const fileCountDiv = document.getElementById('file-count');
+
+    imgInput.addEventListener('change', (event) => {
+      const files = event.target.files;
+      fileCountDiv.textContent = `${files.length} ไฟล์ถูกเลือก`;
+    });
+  });
+</script>

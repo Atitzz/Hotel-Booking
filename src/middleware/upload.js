@@ -1,16 +1,5 @@
 const multer = require("multer");
 
-const storageHotel = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './src/public/hotels');
-  },
-  filename: function (req, file, cb) {
-    cb(null, "hotel-" + Date.now() + "-" + file.originalname);
-  }
-});
-
-const uploadHotelImg = multer({ storage: storageHotel }).single('img');
-
 const storageRoom = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './src/public/Rooms');
@@ -20,6 +9,7 @@ const storageRoom = multer.diskStorage({
   }
 });
 
-const uploadRoomImg = multer({ storage: storageRoom }).single('img');
+// const uploadRoomImg = multer({ storage: storageRoom }).single('img');
+const uploadRoomImg = multer({ storage: storageRoom }).array('img', 10);
 
-module.exports = { uploadHotelImg, uploadRoomImg }
+module.exports = uploadRoomImg;

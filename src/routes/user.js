@@ -12,4 +12,5 @@ router.get("/login", checkAccessToPage, controller.formLogin);
 router.post("/login", checkAccessToPage, controller.login);
 router.get("/logout", auth, controller.logout);
 
+
 module.exports = router;

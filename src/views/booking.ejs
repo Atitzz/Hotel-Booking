@@ -1,9 +1,16 @@
-<%- include('navbar') %>
-
 <style>
-    .border {
+    nav {
+        background-color: #3e3935;
+    }
+
+    #container {
+        margin-top: 100px;
+    }
+
+    .card {
         border-radius: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        min-height: 100%;
     }
     .form {
         text-align: center;
@@ -23,36 +30,37 @@
     }
 
     .btn-block {
-        margin-top: 80px;
+        margin-top: 50px;
     }
 
 </style>
+<%- include('navbar') %>
 
-<div class="container my-5">
+<div class="container" id="container">
     <h2 class="mb-4 text-center">Book a Room</h2>
     <div class="row">
         <div class="col-md-6">
-            <div class="card border">
+            <div class="card">
                 <img src="/rooms/<%= room.img %>" class="card-img-top" alt="Room Image">
                 <div class="card-body">
-                    <h3 class="card-title"><%= room.rooms.name %></h3>
-                    <h4><%= room.type %></h4>
+                    <h3 class="card-title"><%= room.type %></h3>
                     <p class="card-text"><strong>Price:</strong> <%= room.price %> THB / DAY</p>
                     <p class="card-text"><strong>Capacity:</strong> <%= room.size %> people</p>
                     <p class="card-text"><strong>Facilities:</strong> <%= room.facilities %></p>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-6 form">
-            <form action="/booking/hotel/<%= room.rooms.id %>/room/<%= room.id %>" method="POST" class="booking-form needs-validation" novalidate>
+            <form action="/booking/room/<%= room.id %>" method="POST" class="booking-form needs-validation" novalidate>
                 <div class="form-group">
                     <label for="userId">Email</label>
-                    <input type="email" id="userId" name="email" value="<%= user.email %>" class="form-control" readonly>
+                    <input type="email" id="email" name="email" class="form-control" required>
                 </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="<%= user.username %>" class="form-control" readonly>
+                    <input type="text" id="username" name="username" class="form-control" required>
                 </div>
 
                 <div class="form-group">
@@ -69,7 +77,6 @@
 
                 <input type="hidden" value="<%= room.price %>" name="price">
                 <input type="hidden" value="<%= room.id %>" name="roomId">
-                <input type="hidden" value="<%= user.id %>" name="userId">
                 <button type="submit" class="btn btn-primary btn-block">ไปยังหน้าชำระเงิน</button>
             </form>
         </div>

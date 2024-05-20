@@ -1,31 +1,89 @@
 <style>
-  .navbar-nav .nav-link {
-    transition: color 0.3s;
-    color: #ffffff; /* เปลี่ยนสีข้อความเป็นสีขาว */
+  .navbar-scrolled {
+    background-color: #3e3935;
+    transition: background-color 0.7s;
   }
 
-  .navbar-nav .nav-item:hover {
-    background-color: #007bff; /* เปลี่ยนสีพื้นหลังเมื่อ hover เป็นสีฟ้า */
+  #navbarNav {
+    display: flex;
+  }
+  #ul-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    gap: 30px;
+  }
+  #ul-2 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 
-  .navbar-nav .nav-item:hover .nav-link {
-    color: #ffffff !important; /* เปลี่ยนสีข้อความของลิงก์เมื่อ hover เป็นสีขาว */
+
+  #nav-custom {
+    position: relative; /* กำหนดให้มีการแสดงผลเป็นตำแหน่งเพื่อให้มีพื้นที่สำหรับเส้นใต้ */
+    border-bottom: 2px solid transparent; /* กำหนดเส้นใต้โปร่งใสเริ่มต้น */
+    color: #fff !important;
+  }
+  #nav-custom::after {
+      content: ''; 
+      position: absolute; /* กำหนดให้ตำแหน่งเป็น absolute เพื่อให้เคลื่อนไหวได้ */
+      bottom: -2px; 
+      left: 0; 
+      width: 0; 
+      height: 2px; /* กำหนดความสูงของเส้นใต้ */
+      background-color: #f0e36a; /* กำหนดสีของเส้นใต้ */
+      transition: width 0.5s ease-in-out; /* ให้มีการเปลี่ยนแปลงความกว้างของเส้นใต้ด้วยเวลา 0.5 วินาที */
+  }
+  #nav-custom:hover::after {
+      width: 100%; /* ให้เส้นใต้ย่อลงเมื่อ hover */
   }
 
-  .navbar-nav .nav-item:hover {
-    border: 1px solid #ffffff; /* เพิ่มกรอบขอบสีขาวเมื่อ hover */
+
+  .dropdown-toggle {
+    color: #fff !important;
+    position: relative; 
+    border-bottom: 2px solid transparent;
+  }
+  .dropdown-toggle::before {
+    content: ''; 
+      position: absolute; 
+      bottom: -2px; 
+      left: 0; 
+      width: 0; 
+      height: 2px;
+      background-color: #f0e36a; 
+      transition: width 0.5s ease-in-out; 
+  }
+  .dropdown-toggle:hover::before {
+    width: 100%;
+  }
+  .dropdown-menu {
+    background-color: #3e3935!important;
+  }
+  .dropdown-item {
+    background-color: #3e3935!important;
+    color: #fff!important;
+  }
+  .dropdown-item:hover {
+    color: #f0e36a!important;
   }
 
-  .navbar-nav .nav-link {
-    padding: 10px 20px;
-  }
+
 
   .navbar-brand .fa-square-h {
-    font-size: 25px; /* ปรับขนาดไอคอนเพิ่มขึ้น */
+    font-size: 25px;
+  }
+
+  #custom-btn {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .user-name {
-    border: 1px solid #ffffff; /* เปลี่ยนสีกรอบเป็นสีขาว */
+    border: 1px solid #ffffff;
     border-radius: 50px;
   }
 </style>
@@ -39,40 +97,49 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
-    <strong class="navbar-brand" href="/">
-      <i class="fa-solid fa-square-h text-primary"></i>otel Booking
-    </strong>
+    <a href="/" class="navbar-brand">
+      <i class="fa-solid fa-synagogue" style="font-size: 40px; color: #f0e36a"></i>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mx-auto"> <!-- ใช้คลาส mx-auto เพื่อจัดวางเมนูตรงกลาง -->
+      <ul class="navbar-nav" id="ul-1">
         <li class="nav-item">
-          <a class="nav-link" href="/">
-            <i class="fas fa-home mr-1"></i> Home
+          <a class="nav-link" id="nav-custom" href="/">
+            <i class="fas fa-hotel mr-1"></i> Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/allHotel">
-            <i class="fas fa-hotel mr-1"></i> Hotels
+          <a class="nav-link" id="nav-custom" href="/rooms">
+            <i class="fas fa-bed mr-1"></i> Room
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/showRooms">
-            <i class="fas fa-bed mr-1"></i> Rooms
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" id="nav-custom" href="#">
             <i class="fas fa-info-circle mr-1"></i> About
           </a>
         </li>
+
+        <% if(checkTypeUser && checkTypeUser.role=="admin" ) { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-list mr-1"></i> Admin
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/addRoom"><i class="fas fa-plus mr-1"></i>เพิ่มห้องพัก</a>
+              <a class="dropdown-item" href="/checkOut"><i class=""></i> Check Out</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        <% } %>
+
       </ul>
 
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav" id="ul-2">
         <% if(user) { %>
           <li class="user-name m-1 text-center">
             <span class="nav-link text-white">
@@ -81,18 +148,18 @@
             </span>
           </li>
           <li class="m-1">
-            <a class="nav-link btn btn-primary text-white" href="/users/logout"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
+            <a class="nav-link btn" id="custom-btn" href="/users/logout"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
               <i class="fas fa-sign-out-alt mr-1"></i> Logout
             </a>
           </li>
           <% } else { %>
             <li class="m-1">
-              <a class="nav-link btn btn-primary text-white" href="/users/register"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
+              <a class="nav-link btn" id="custom-btn" href="/users/register"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
                 <i class="fas fa-user-plus mr-1"></i> Sign Up
               </a>
             </li>
             <li class="m-1">
-              <a class="nav-link btn btn-primary text-white" href="/users/login"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
+              <a class="nav-link btn" id="custom-btn" href="/users/login"> <!-- เปลี่ยนสีปุ่มเป็นสีฟ้า -->
                 <i class="fas fa-sign-in-alt mr-1"></i> Login
               </a>
             </li>
@@ -102,3 +169,20 @@
     </div>
   </div>
 </nav>
+
+<script>
+  var navbar = document.querySelector('.navbar');
+
+  // เพิ่มตัวกำกับเหตุการณ์เมื่อมีการเลื่อนหน้าเว็บ
+  window.addEventListener('scroll', function () {
+    // ตรวจสอบว่าเลื่อนหน้าเว็บลงมาหรือไม่
+    if (window.scrollY > 0) {
+      // ถ้าเลื่อนลงมาแล้ว ให้เพิ่มคลาส navbar-scrolled ใน Navbar
+      navbar.classList.add('navbar-scrolled');
+    } else {
+      // ถ้าย้อนกลับขึ้นไปด้านบน ให้ลบคลาส navbar-scrolled ออกจาก Navbar
+      navbar.classList.remove('navbar-scrolled');
+    }
+  });
+
+</script>

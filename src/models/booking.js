@@ -3,11 +3,9 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
     static associate(models) {
-      Booking.belongsTo(models.User, {
-        foreignKey: "userId",
-      });
       Booking.belongsTo(models.Room, {
         foreignKey: "roomId",
+        as: 'roomBooking',
       });
     }
   }
@@ -18,9 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      userId: {
-        type: DataTypes.INTEGER,
-        foreignKey: true,
+      username: {
+        type: DataTypes.STRING,
       },
       roomId: {
         type: DataTypes.INTEGER,
@@ -30,14 +27,18 @@ module.exports = (sequelize, DataTypes) => {
       endDate: DataTypes.DATE,
       status: DataTypes.ENUM("Confirm", "Cancel"), //สถานะของการจอง
       paymentStatus: {
-        type: DataTypes.ENUM("Pending", "Paid"), // สถานะการชำระเงิน
+        type: DataTypes.ENUM("Pending", "Paid", "Cancel"), // สถานะการชำระเงิน
         defaultValue: "Pending",
+      },
+      checkOut: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
       },
     },
     {
       sequelize,
       modelName: "Booking",
-      timestamps: false,
+      timestamps: true,
     }
   );
   return Booking;

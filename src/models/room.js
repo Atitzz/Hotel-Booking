@@ -5,10 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Room.hasOne(models.Booking, {
         foreignKey: "roomId",
-      });
-      Room.belongsTo(models.Hotel, {
-        foreignKey: "hotelId",
-        as: 'rooms'
+        as: 'roomBooking'
       });
     }
   }
@@ -21,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       type: {
         type: DataTypes.ENUM(   //ประเภทห้อง
-          "Standard Room",
-          "Superior Room",
-          "Deluxe Room",
-          "Suite Room"
+          "Standard",
+          "Superior",
+          "Deluxe",
+          "Suite"
         ), 
         allowNull: false,
       },
@@ -33,11 +30,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       status: {
-        type: DataTypes.ENUM("Available", "Occupied"), //สถานะของห้อง
+        type: DataTypes.ENUM("Available", "Occupied"), 
         allowNull: false,
       },
       size: {
-        type: DataTypes.STRING, //จุได้กี่คน
+        type: DataTypes.STRING,
         allowNull: false,
       },
       facilities: {
@@ -45,18 +42,22 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       img: {
-        type: DataTypes.STRING, //รูปห้อง
+        type: DataTypes.TEXT, 
         allowNull: false,
       },
-      hotelId: {
-        type: DataTypes.INTEGER,
-        foreignKey: true,
+      startDate: {
+        type: DataTypes.DATE,
+        allowNull: true
       },
+      endDate: {
+        type: DataTypes.DATE,
+        allowNull: true
+      }
     },
     {
       sequelize,
       modelName: "Room",
-      timestamps: true,
+      timestamps: true
     }
   );
   return Room;

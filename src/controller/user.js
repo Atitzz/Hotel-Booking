@@ -6,8 +6,9 @@ const config = process.env;
 
 const formRegister = async (req, res) => {
   try {
+    const checkTypeUser = []
     const message = req.flash("error");
-    res.render("users/register", { message });
+    res.render("users/register", { message, checkTypeUser });
   } catch (error) {
     console.log(error);
   }
@@ -58,8 +59,9 @@ const register = async (req, res) => {
 
 const formLogin = async (req, res) => {
   try {
+    const checkTypeUser = []
     const message = req.flash("error");
-    res.render("users/login", { message });
+    res.render("users/login", { message, checkTypeUser });
   } catch (error) {
     console.log(error.message);
   }
@@ -90,7 +92,6 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, config.TOKEN, { expiresIn: "1h" });
     res.cookie("jwt", token, { httpOnly: true, maxAge: 3600000 });
     res.cookie("user", user.username, { httpOnly: true, maxAge: 3600000 });
-    res.cookie("type", user.role, { httpOnly: true, maxAge: 3600000 });
     req.flash("success", user.username, "เข้าสู่ระบบเรียบร้อยแล้ว");
     res.redirect("/");
   } catch (error) {
@@ -107,5 +108,6 @@ const logout = async (req, res) => {
     console.log(error);
   }
 };
+
 
 module.exports = { formRegister, register, formLogin, login, logout };

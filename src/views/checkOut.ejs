@@ -1,0 +1,39 @@
+<style>
+    nav {
+        background-color: #3e3935;
+    }
+
+    #container {
+        margin-top: 100px;
+    }
+</style>
+
+<%- include('navbar') %>
+    <div class="container" id="container">
+        <h1 class="mb-4">Checkout</h1>
+        <% bookings.forEach((item) => { %>
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="/rooms/<%= item.roomBooking.img %>" class="card-img" alt="Room Image" style="width: 100%; height: 100%;">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= item.roomBooking.type %></h5>
+                            <p class="card-text">Size: <%= item.roomBooking.size %></p>
+                            <p class="card-text">Check In: <%= day(item.roomBooking.startDate).format("DD-MM-YY") %></p>
+                            <p class="card-text">Check Out: <%= day(item.roomBooking.endDate).format("DD-MM-YY") %></p>
+                            <p class="card-text">Customer: <%= showUser %></p>
+
+                            <form action="/checkOut" method="post">
+                                <input type="hidden" name="roomId" value="<%= item.roomId %>">
+                                <button type="submit" class="btn btn-primary">Checkout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+<%- include('footer') %>
